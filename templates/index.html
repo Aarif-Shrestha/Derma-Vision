@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Home - DermaVision{% endblock %}
+
+{% block additional_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block hero %}
+<section class="hero-section home-hero">
+    <div class="container">
+        <div class="hero-content-wrapper" style="gap: 3rem;">
+            <div class="hero-content" style="align-items: flex-start; text-align: left; margin-left: 0; padding-left: 0;">
+                <h1>AI-Powered Skin Disease Detection</h1>
+                <p>Get accurate skin condition analysis using advanced artificial intelligence. Upload your images and receive instant professional-grade assessments.</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('detect') }}" class="btn btn-primary">Try It Now <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ url_for('about') }}" class="btn btn-secondary">Learn More <i class="fas fa-info-circle"></i></a>
+                </div>
+            </div>
+            <div>
+                <img src="{{ url_for('static', filename='images/hero-image.jpg') }}" alt="AI Skin Analysis">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Makes DermaVision Unique?</h2>
+            <p>Discover the benefits of our platform designed for your skin health journey.</p>
+        </div>
+        <div class="features-grid redesigned-features" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 2rem;">
+            <div class="feature-card">
+                <div class="feature-icon gradient-bg">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Smart AI Diagnosis</h3>
+                <p>Our AI leverages deep learning to provide reliable, fast, and accurate skin assessments for a wide range of conditions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-bg">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Instant, Actionable Results</h3>
+                <p>Receive a detailed report and next steps in seconds, empowering you to take control of your skin health immediately.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-bg">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Data Privacy & Security</h3>
+                <p>All uploads are encrypted and never shared. Your privacy and trust are our top priorities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-bg">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Expert-Backed Insights</h3>
+                <p>Our results are validated by dermatology experts, ensuring you get trustworthy and actionable information.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>Get your skin analysis in four simple, guided steps.</p>
+        </div>
+        <div class="steps-overlap">
+            <div class="step-circle">
+                <div class="step-icon"><i class="fas fa-camera"></i></div>
+                <div class="step-content">
+                    <h3>1. Upload a Photo</h3>
+                    <p>Take or select a clear photo of your skin concern using your device.</p>
+                </div>
+            </div>
+            <div class="step-circle">
+                <div class="step-icon"><i class="fas fa-magic"></i></div>
+                <div class="step-content">
+                    <h3>2. AI-Powered Analysis</h3>
+                    <p>Our advanced AI examines your image for signs of common skin conditions.</p>
+                </div>
+            </div>
+            <div class="step-circle">
+                <div class="step-icon"><i class="fas fa-file-medical-alt"></i></div>
+                <div class="step-content">
+                    <h3>3. Get Your Report</h3>
+                    <p>Receive a detailed, easy-to-understand report with possible matches and recommendations.</p>
+                </div>
+            </div>
+            <div class="step-circle">
+                <div class="step-icon"><i class="fas fa-user-check"></i></div>
+                <div class="step-content">
+                    <h3>4. Next Steps</h3>
+                    <p>Follow expert-backed advice or connect with a dermatologist for further care.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Our Users Say</h2>
+            <p>Real experiences from people who trust DermaVision</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    "DermaVision helped me identify a concerning mole early on. The quick analysis gave me the confidence to seek professional help immediately."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-image">
+                        <img src="{{ url_for('static', filename='images/testimonial-1.jpg') }}" alt="Sarah Johnson">
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>User since 2023</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    "As a healthcare professional, I'm impressed by the accuracy of DermaVision's AI analysis. It's a valuable tool for initial screening."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-image">
+                        <img src="{{ url_for('static', filename='images/testimonial-2.jpg') }}" alt="Dr. Michael Chen">
+                    </div>
+                    <div class="author-info">
+                        <h4>Dr. Michael Chen</h4>
+                        <p>Dermatologist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    "The instant results and detailed reports have made it so much easier to monitor my skin conditions. Highly recommended!"
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-image">
+                        <img src="{{ url_for('static', filename='images/testimonial-3.jpg') }}" alt="Emily Rodriguez">
+                    </div>
+                    <div class="author-info">
+                        <h4>Emily Rodriguez</h4>
+                        <p>Regular User</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Start Your Skin Health Journey Today</h2>
+            <p>Join thousands of users who trust DermaVision for their skin health assessment needs.</p>
+            <div class="cta-buttons">
+                {% if not session.get('user_id') %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Sign Up Now <i class="fas fa-user-plus"></i></a>
+                {% endif %}
+                <a href="{{ url_for('detect') }}" class="btn btn-secondary">Try Demo <i class="fas fa-external-link-alt"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any page-specific JavaScript here
+        
+        // Example: Animate statistics on scroll
+        const stats = document.querySelectorAll('.stat-card h3');
+        
+        function animateStats() {
+            stats.forEach(stat => {
+                const value = stat.innerText;
+                const numValue = parseFloat(value.replace(/[^0-9.]/g, ''));
+                let currentValue = 0;
+                
+                const increment = numValue / 50;
+                const duration = 2000;
+                const interval = duration / 50;
+                
+                const counter = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= numValue) {
+                        stat.innerText = value;
+                        clearInterval(counter);
+                    } else {
+                        stat.innerText = Math.round(currentValue) + (value.includes('%') ? '%' : '+');
+                    }
+                }, interval);
+            });
+        }
+
+        // Trigger animation when stats section is in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.statistics');
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Derma Vision{% endblock %}
+
+{% block additional_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block hero %}
+<section class="hero about-hero">
+    <div class="container">
+        <div class="section-header">
+            <h1>About Derma Vision</h1>
+            <p>Revolutionizing skin health through artificial intelligence</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="mission-vision">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Mission & Vision</h2>
+            <p>Empowering early detection and global skin health through AI innovation.</p>
+        </div>
+        <div class="mission-vision-grid" style="display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;">
+            <div class="mission-card" style="flex: 1 1 260px; min-width: 220px; max-width: 400px; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px rgba(44,123,229,0.08); padding: 2rem 1.5rem; text-align: center;">
+                <i class="fas fa-bullseye"></i>
+                <h2>Our Mission</h2>
+                <p>To make early skin disease detection accessible to everyone through innovative AI technology, empowering individuals to take control of their skin health.</p>
+            </div>
+            <div class="vision-card" style="flex: 1 1 260px; min-width: 220px; max-width: 400px; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px rgba(44,123,229,0.08); padding: 2rem 1.5rem; text-align: center;">
+                <i class="fas fa-eye"></i>
+                <h2>Our Vision</h2>
+                <p>To become the world's leading platform for AI-powered skin disease detection, improving healthcare outcomes globally through early detection and awareness.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-section redesigned">
+    <div class="container">
+        <h2 class="team-title">Meet Our Team</h2>
+        <p class="section-description">A dedicated group of professionals working to revolutionize skin health care</p>
+        <div class="team-cards-grid">
+            <div class="team-card-redesigned">
+                <div class="team-photo">
+                    <img src="{{ url_for('static', filename='images/team/aarif.jpg') }}" alt="Aarif Shrestha">
+                </div>
+                <div class="team-card-info">
+                    <h3>Aarif Shrestha</h3>
+                    <span class="team-role">Lead Developer</span>
+                    <p class="team-bio">Specializes in AI and machine learning with a focus on medical image processing.</p>
+                    <div class="team-socials">
+                        <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:aarif@dermavision.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card-redesigned">
+                <div class="team-photo">
+                    <img src="{{ url_for('static', filename='images/team/dip.jpg') }}" alt="Dip Darpan Kandel">
+                </div>
+                <div class="team-card-info">
+                    <h3>Dip Darpan Kandel</h3>
+                    <span class="team-role">AI Specialist</span>
+                    <p class="team-bio">Expert in deep learning models and neural network architecture design.</p>
+                    <div class="team-socials">
+                        <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:dip@dermavision.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card-redesigned">
+                <div class="team-photo">
+                    <img src="{{ url_for('static', filename='images/team/rijan.jpg') }}" alt="Rijan Prajapati">
+                </div>
+                <div class="team-card-info">
+                    <h3>Rijan Prajapati</h3>
+                    <span class="team-role">Backend Developer</span>
+                    <p class="team-bio">Specializes in scalable architecture and secure data management.</p>
+                    <div class="team-socials">
+                        <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:rijan@dermavision.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card-redesigned">
+                <div class="team-photo">
+                    <img src="{{ url_for('static', filename='images/team/surya.jpg') }}" alt="Surya Prakash Jaishwal">
+                </div>
+                <div class="team-card-info">
+                    <h3>Surya Prakash Jaishwal</h3>
+                    <span class="team-role">Frontend Developer</span>
+                    <p class="team-bio">Creates intuitive and accessible user interfaces for healthcare applications.</p>
+                    <div class="team-socials">
+                        <a href="https://linkedin.com/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:surya@dermavision.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="achievements-section redesigned">
+    <div class="container">
+        <h2 class="achievements-title">Our Achievements</h2>
+        <div class="achievements-cards-grid">
+            <div class="achievement-card-redesigned">
+                <div class="achievement-icon"><i class="fas fa-award"></i></div>
+                <div class="achievement-info">
+                    <h3>Best Healthcare Innovation 2023</h3>
+                    <p>Recognized for breakthrough AI technology in medical diagnosis</p>
+                </div>
+            </div>
+            <div class="achievement-card-redesigned">
+                <div class="achievement-icon"><i class="fas fa-users"></i></div>
+                <div class="achievement-info">
+                    <h3>10,000+ Users</h3>
+                    <p>Trusted by thousands of users worldwide</p>
+                </div>
+            </div>
+            <div class="achievement-card-redesigned">
+                <div class="achievement-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="achievement-info">
+                    <h3>95% Accuracy</h3>
+                    <p>High precision in skin condition detection</p>
+                </div>
+            </div>
+            <div class="achievement-card-redesigned">
+                <div class="achievement-icon"><i class="fas fa-globe"></i></div>
+                <div class="achievement-info">
+                    <h3>Global Impact</h3>
+                    <p>Making healthcare accessible across borders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="technology-section redesigned">
+    <div class="container">
+        <h2 class="technology-title">Our Technology</h2>
+        <div class="technology-cards-grid">
+            <div class="technology-card-redesigned">
+                <div class="technology-icon"><i class="fas fa-brain"></i></div>
+                <h3>Deep Learning</h3>
+                <p>Advanced neural networks trained on vast medical datasets</p>
+            </div>
+            <div class="technology-card-redesigned">
+                <div class="technology-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Security</h3>
+                <p>Enterprise-grade encryption and data protection</p>
+            </div>
+            <div class="technology-card-redesigned">
+                <div class="technology-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Accessibility</h3>
+                <p>Cross-platform support for all devices</p>
+            </div>
+            <div class="technology-card-redesigned">
+                <div class="technology-icon"><i class="fas fa-chart-bar"></i></div>
+                <h3>Analytics</h3>
+                <p>Comprehensive reporting and analysis tools</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contact-cta redesigned">
+    <div class="container">
+        <div class="contact-cta-content">
+            <div class="contact-cta-info">
+                <h2>Contact Our Team</h2>
+                <p>Have questions, feedback, or want to collaborate? Reach out to us and we’ll get back to you as soon as possible.</p>
+                <div class="contact-cta-buttons">
+                    <a href="mailto:info@dermavision.com" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Email Us
+                    </a>
+                    <a href="{{ url_for('faq') }}" class="btn btn-secondary">
+                        <i class="fas fa-question-circle"></i> View FAQ
+                    </a>
+                </div>
+            </div>
+            <div class="contact-cta-image">
+                <img src="{{ url_for('static', filename='images/pattern.svg') }}" alt="Contact Derma Vision" style="width: 90px; height: 90px;">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scroll for team member cards
+        const teamMembers = document.querySelectorAll('.team-member');
+
+        teamMembers.forEach(member => {
+            member.addEventListener('mouseenter', () => {
+                member.style.transform = 'translateY(-10px)';
+                member.style.transition = 'transform 0.3s ease';
+            });
+
+            member.addEventListener('mouseleave', () => {
+                member.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animate achievement numbers
+        const achievementNumbers = document.querySelectorAll('.achievement-card h3');
+
+        function animateNumbers() {
+            achievementNumbers.forEach(number => {
+                const text = number.textContent;
+                const matches = text.match(/\d+/);
+                if (matches) {
+                    const value = parseInt(matches[0]);
+                    let currentValue = 0;
+                    const increment = value / 50;
+                    const interval = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= value) {
+                            clearInterval(interval);
+                            currentValue = value;
+                        }
+                        number.textContent = text.replace(/\d+/, Math.floor(currentValue));
+                    }, 40);
+                }
+            });
+        }
+
+        // Trigger animation when achievements section is in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumbers();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        const achievementsSection = document.querySelector('.achievements');
+        if (achievementsSection) {
+            observer.observe(achievementsSection);
+        }
+    });
+</script>
+{% endblock %}

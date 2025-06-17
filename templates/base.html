@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Derma Vision{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block additional_styles %}{% endblock %}
+    <style>
+    /* Improved, modern night mode palette */
+    .night-mode {
+        background: #23272e !important;
+        color: #f1f1f1 !important;
+    }
+    .night-mode body, .night-mode html {
+        background: #23272e !important;
+        color: #f1f1f1 !important;
+    }
+    .night-mode section, .night-mode .section, .night-mode .auth-box, .night-mode .card, .night-mode .navbar, .night-mode .footer-section, .night-mode .container, .night-mode .alert {
+        background: #262b33 !important;
+        color: #f1f1f1 !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.22) !important;
+        border-radius: 8px;
+    }
+    .night-mode h1, .night-mode h2, .night-mode h3, .night-mode h4, .night-mode h5, .night-mode h6, .night-mode .logo h1 {
+        color: #fff !important;
+    }
+    .night-mode .btn, .night-mode .btn-primary, .night-mode .btn-secondary, .night-mode .btn-outline {
+        background: #00adb5 !important;
+        color: #f1f1f1 !important;
+        border: 1.5px solid #00adb5 !important;
+        transition: background 0.2s, color 0.2s;
+    }
+    .night-mode .btn:hover, .night-mode .btn-primary:hover, .night-mode .btn-secondary:hover, .night-mode .btn-outline:hover {
+        background: #393e46 !important;
+        color: #00adb5 !important;
+    }
+    .night-mode input, .night-mode textarea, .night-mode select, .night-mode .form-control {
+        background: #23272e !important;
+        color: #f1f1f1 !important;
+        border: 1.5px solid #393e46 !important;
+        border-radius: 5px;
+    }
+    .night-mode input:focus, .night-mode textarea:focus, .night-mode select:focus, .night-mode .form-control:focus {
+        border-color: #00adb5 !important;
+        box-shadow: 0 0 0 2px #00adb5 !important;
+    }
+    .night-mode .navbar, .night-mode footer {
+        background: #23272e !important;
+        color: #f1f1f1 !important;
+        border-bottom: 1px solid #393e46;
+    }
+    .night-mode .nav-links a, .night-mode .nav-links a.active, .night-mode .nav-links a:hover {
+        color: #00adb5 !important;
+    }
+    .night-mode .alert {
+        background: #393e46 !important;
+        color: #ffe6e6 !important;
+        border-left: 5px solid #ff6363 !important;
+    }
+    .night-mode .alert-success {
+        background: #233a2b !important;
+        color: #b6f7c6 !important;
+        border-left: 5px solid #00adb5 !important;
+    }
+    .night-mode .alert-error {
+        background: #3a2323 !important;
+        color: #ffe6e6 !important;
+        border-left: 5px solid #ff6363 !important;
+    }
+    .night-mode .popup-alert {
+        background: #23272e !important;
+        color: #f1f1f1 !important;
+        border-left: 5px solid #00adb5 !important;
+    }
+    .night-mode .popup-alert.alert-success {
+        background: #233a2b !important;
+        color: #b6f7c6 !important;
+        border-left: 5px solid #00adb5 !important;
+    }
+    .night-mode .popup-alert.alert-error {
+        background: #3a2323 !important;
+        color: #ffe6e6 !important;
+        border-left: 5px solid #ff6363 !important;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/pattern.svg') }}" alt="Derma Vision Logo" class="logo-img">
+                    <h1>Derma Vision</h1>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active"{% endif %}>Home</a>
+                <a href="{{ url_for('about') }}" {% if request.endpoint == 'about' %}class="active"{% endif %}>About</a>
+                <a href="{{ url_for('detect') }}" {% if request.endpoint == 'detect' %}class="active"{% endif %}>Detect</a>
+                <a href="{{ url_for('faq') }}" {% if request.endpoint == 'faq' %}class="active"{% endif %}>FAQ</a>
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+            <div class="menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    {% block hero %}{% endblock %}
+
+    <main>
+        <div id="popup-alert-container" style="display:none;"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var container = document.getElementById('popup-alert-container');
+                    {% for category, message in messages %}
+                    var alert = document.createElement('div');
+                    alert.className = 'alert alert-{{ category }} popup-alert';
+                    alert.innerHTML = {{ message|tojson|safe }} + "<button type='button' class='close' aria-label='Close'>&times;</button>";
+                    container.appendChild(alert);
+                    setTimeout(function() {
+                        alert.classList.add('fade-out');
+                        setTimeout(function() { alert.remove(); }, 400);
+                    }, 4000);
+                    alert.querySelector('.close').onclick = function() {
+                        alert.classList.add('fade-out');
+                        setTimeout(function() { alert.remove(); }, 400);
+                    };
+                    {% endfor %}
+                });
+                </script>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer redesigned-footer">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <img src="{{ url_for('static', filename='images/pattern.svg') }}" alt="Derma Vision Logo" class="footer-logo">
+                    <h3>Derma Vision</h3>
+                    <p>AI-powered skin disease detection for everyone.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        <li><a href="{{ url_for('detect') }}">Detect</a></li>
+                        <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@dermavision.com</p>
+                    <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                    <div class="footer-socials">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ current_year }} Derma Vision. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

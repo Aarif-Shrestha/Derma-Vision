@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - Derma Vision{% endblock %}
+
+{% block additional_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="faq-hero">
+    <div class="container">
+        <div class="section-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Find answers to common questions about Derma Vision's skin disease detection system.</p>
+        </div>
+    </div>
+</div>
+
+<div class="faq-container">
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search frequently asked questions..." id="faqSearch">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </div>
+
+    <div class="faq-categories" style="display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 2rem;">
+        <button class="category-btn active" data-category="general">General</button>
+        <button class="category-btn" data-category="technical">Technical</button>
+        <button class="category-btn" data-category="accuracy">Accuracy</button>
+        <button class="category-btn" data-category="privacy">Privacy & Security</button>
+    </div>
+
+    <div class="faq-section" id="generalFAQ">
+        <h2>General Questions</h2>
+        <div class="faq-grid" style="display: grid; gap: 1.5rem;">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is Derma Vision?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Derma Vision is an AI-powered skin disease detection system that helps identify potential skin conditions through image analysis. It uses advanced machine learning algorithms to provide preliminary assessments of skin conditions.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How accurate is the detection system?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Our system achieves a high accuracy rate in identifying common skin conditions. However, it's important to note that this tool is meant for preliminary screening only and should not replace professional medical advice.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is this a replacement for seeing a doctor?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        No, Derma Vision is not a replacement for professional medical advice. It's designed as a preliminary screening tool to help you better understand potential skin conditions. Always consult with a qualified healthcare provider for proper diagnosis and treatment.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-section" id="technicalFAQ">
+        <h2>Technical Questions</h2>
+        <div class="faq-grid" style="display: grid; gap: 1.5rem;">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What image formats are supported?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        We support common image formats including JPG, PNG, and JPEG. The maximum file size is 16MB, and we recommend images with a minimum resolution of 500x500 pixels for best results.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How should I take photos for best results?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        For best results:
+                        <ul>
+                            <li>Use good lighting (natural daylight is best)</li>
+                            <li>Keep the camera steady and in focus</li>
+                            <li>Include some surrounding healthy skin for context</li>
+                            <li>Take multiple angles if possible</li>
+                            <li>Avoid using flash photography</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="support-section">
+    <div class="container">
+        <div class="support-content">
+            <div class="section-header">
+                <h2>Need More Help?</h2>
+                <p>Can't find what you're looking for? We're here to help!</p>
+            </div>
+            <div class="support-cards" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                <a href="{{ url_for('about') }}#contact" class="support-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Contact Support</h3>
+                    <p>Get in touch with our support team for assistance</p>
+                </a>
+                
+                <a href="#" class="support-card">
+                    <i class="fas fa-book-medical"></i>
+                    <h3>Documentation</h3>
+                    <p>Browse our detailed documentation and guides</p>
+                </a>
+                
+                <a href="#" class="support-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Community</h3>
+                    <p>Join our community forum for discussions</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // FAQ Accordion functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            // Close all other items
+            faqItems.forEach(otherItem => {
+                otherItem.classList.remove('active');
+            });
+            
+            // Toggle current item
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // Category filtering
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const faqSections = document.querySelectorAll('.faq-section');
+    
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            categoryBtns.forEach(otherBtn => {
+                otherBtn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Show/hide relevant sections
+            const category = btn.dataset.category;
+            faqSections.forEach(section => {
+                if (section.id === `${category}FAQ`) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('faqSearch');
+    const allQuestions = document.querySelectorAll('.faq-question span');
+    
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        allQuestions.forEach(question => {
+            const faqItem = question.closest('.faq-item');
+            const text = question.textContent.toLowerCase();
+            
+            if (text.includes(searchTerm)) {
+                faqItem.style.display = 'block';
+            } else {
+                faqItem.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
