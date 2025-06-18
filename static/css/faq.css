@@ -44,6 +44,56 @@
     background-color: var(--background-color);
 }
 
+/* Redesigned FAQ Container */
+.faq-container.redesigned-faq {
+    background: linear-gradient(120deg, #fafdff 60%, #e3f0fc 100%, #fff 100%);
+    border-radius: 32px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 8px 0 rgba(44, 123, 229, 0.06), 0 0 0 12px rgba(240,245,255,0.10);
+    padding: 6rem 6rem 6rem 6rem; /* Increased padding for more spacing */
+    margin: 3.5rem auto 4.5rem auto;
+    max-width: 1300px;
+    min-width: 320px;
+    width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid rgba(220, 230, 255, 0.13);
+    /* Removed blend effect */
+    /* backdrop-filter: blur(4px) saturate(120%); */
+    animation: popup-fade-in 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: max-width 0.3s, padding 0.3s;
+    row-gap: 2.5rem; /* Add vertical spacing between children */
+    min-height: 600px !important; /* Force min-height to prevent shrinking */
+}
+
+.redesigned-faq-grid {
+    gap: 2.5rem;
+}
+
+.redesigned-faq-item {
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(44, 123, 229, 0.08);
+    background: #fff;
+    padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1.5px solid #e3f0fc;
+}
+
+.redesigned-faq-item:hover {
+    box-shadow: 0 16px 40px rgba(44, 123, 229, 0.13);
+    transform: translateY(-4px) scale(1.01);
+}
+
+.faq-section-title {
+    color: #2c7be5;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
 /* Search Section */
 .search-section {
     max-width: 600px;
@@ -234,10 +284,96 @@
     transform: translateY(-2px);
 }
 
+.support-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+@media (max-width: 1100px) {
+    .support-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .support-cards {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        align-items: center;
+    }
+    .support-card {
+        max-width: 95vw;
+        min-width: 0;
+        padding: 1.5rem 1rem;
+    }
+}
+
+.support-card {
+    background: rgba(255,255,255,0.13);
+    border-radius: 22px;
+    box-shadow: 0 6px 32px rgba(44, 123, 229, 0.13);
+    padding: 2.2rem 2.5rem 2rem 2.5rem;
+    color: #fff;
+    text-align: center;
+    min-width: 260px;
+    max-width: 320px;
+    flex: 1 1 260px;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+    border: 1.5px solid rgba(255,255,255,0.18);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.support-card:hover {
+    background: rgba(255,255,255,0.22);
+    box-shadow: 0 16px 40px rgba(44, 123, 229, 0.18);
+    transform: translateY(-6px) scale(1.03);
+    color: #fff;
+}
+
+.support-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    color: #fff;
+    opacity: 0.92;
+    transition: color 0.2s;
+}
+
+.support-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+}
+
+.support-card p {
+    font-size: 1rem;
+    opacity: 0.92;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
     .faq-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .faq-container.redesigned-faq {
+        max-width: 98vw;
+        padding: 2.5rem 1.2rem 2.2rem 1.2rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .faq-container.redesigned-faq {
+        padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+        margin: 2rem 0 2.5rem 0;
     }
 }
 
@@ -260,7 +396,12 @@
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 600px) {
+    .faq-container.redesigned-faq {
+        padding: 1rem 0.2rem 1rem 0.2rem;
+        border-radius: 18px;
+    }
+
     .category-btn {
         width: 100%;
         text-align: center;
@@ -269,4 +410,13 @@
     .faq-question h3 {
         font-size: 1rem;
     }
+}
+
+.section-header {
+    color: #fff !important;
+}
+.section-header h1,
+.section-header h2,
+.section-header p {
+    color: #fff !important;
 }

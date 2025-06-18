@@ -6,37 +6,40 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
 {% endblock %}
 
-{% block content %}
-<div class="faq-hero">
+{% block hero %}
+<section class="hero-section">
     <div class="container">
-        <div class="section-header">
+        <div class="hero-content">
+            <img src="{{ url_for('static', filename='images/pattern.svg') }}" alt="FAQ Illustration" style="width: 70px; margin-bottom: 1.2rem; opacity: 0.85;">
             <h1>Frequently Asked Questions</h1>
             <p>Find answers to common questions about Derma Vision's skin disease detection system.</p>
         </div>
     </div>
-</div>
+</section>
+{% endblock %}
 
-<div class="faq-container">
-    <div class="search-container">
+{% block content %}
+<section class="faq-container redesigned-faq">
+    <div class="search-container redesigned-faq-search">
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="Search frequently asked questions..." id="faqSearch">
+            <input type="text" class="search-input" placeholder="Search FAQs..." id="faqSearch">
             <i class="fas fa-search search-icon"></i>
         </div>
     </div>
 
-    <div class="faq-categories" style="display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 2rem;">
-        <button class="category-btn active" data-category="general">General</button>
-        <button class="category-btn" data-category="technical">Technical</button>
-        <button class="category-btn" data-category="accuracy">Accuracy</button>
-        <button class="category-btn" data-category="privacy">Privacy & Security</button>
+    <div class="faq-categories redesigned-faq-categories">
+        <button class="category-btn active" data-category="general"><i class="fas fa-globe"></i> General</button>
+        <button class="category-btn" data-category="technical"><i class="fas fa-cogs"></i> Technical</button>
+        <button class="category-btn" data-category="accuracy"><i class="fas fa-bullseye"></i> Accuracy</button>
+        <button class="category-btn" data-category="privacy"><i class="fas fa-user-shield"></i> Privacy & Security</button>
     </div>
 
-    <div class="faq-section" id="generalFAQ">
-        <h2>General Questions</h2>
-        <div class="faq-grid" style="display: grid; gap: 1.5rem;">
-            <div class="faq-item">
+    <div class="faq-section redesigned-faq-section" id="generalFAQ">
+        <h2 class="faq-section-title"><i class="fas fa-question-circle"></i> General Questions</h2>
+        <div class="faq-grid redesigned-faq-grid">
+            <div class="faq-item redesigned-faq-item">
                 <div class="faq-question">
-                    <span>What is Derma Vision?</span>
+                    <span><i class="fas fa-info-circle"></i> What is Derma Vision?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
@@ -45,10 +48,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="faq-item">
+            <div class="faq-item redesigned-faq-item">
                 <div class="faq-question">
-                    <span>How accurate is the detection system?</span>
+                    <span><i class="fas fa-check-circle"></i> How accurate is the detection system?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
@@ -57,10 +59,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="faq-item">
+            <div class="faq-item redesigned-faq-item">
                 <div class="faq-question">
-                    <span>Is this a replacement for seeing a doctor?</span>
+                    <span><i class="fas fa-user-md"></i> Is this a replacement for seeing a doctor?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
@@ -69,15 +70,38 @@
                     </div>
                 </div>
             </div>
+            <!-- Additional FAQ items for more content -->
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-mobile-alt"></i> Can I use Derma Vision on my phone?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Yes, Derma Vision is mobile-friendly and can be accessed from any modern smartphone or tablet with an internet connection.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-language"></i> What languages are supported?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Currently, Derma Vision supports English. We plan to add more languages in the future.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="faq-section" id="technicalFAQ">
-        <h2>Technical Questions</h2>
-        <div class="faq-grid" style="display: grid; gap: 1.5rem;">
-            <div class="faq-item">
+    <div class="faq-section redesigned-faq-section" id="technicalFAQ">
+        <h2 class="faq-section-title"><i class="fas fa-cogs"></i> Technical Questions</h2>
+        <div class="faq-grid redesigned-faq-grid">
+            <div class="faq-item redesigned-faq-item">
                 <div class="faq-question">
-                    <span>What image formats are supported?</span>
+                    <span><i class="fas fa-image"></i> What image formats are supported?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
@@ -86,10 +110,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="faq-item">
+            <div class="faq-item redesigned-faq-item">
                 <div class="faq-question">
-                    <span>How should I take photos for best results?</span>
+                    <span><i class="fas fa-camera"></i> How should I take photos for best results?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
@@ -107,7 +130,85 @@
             </div>
         </div>
     </div>
-</div>
+
+    <div class="faq-section redesigned-faq-section" id="accuracyFAQ" style="display:none;">
+        <h2 class="faq-section-title"><i class="fas fa-bullseye"></i> Accuracy Questions</h2>
+        <div class="faq-grid redesigned-faq-grid">
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-percentage"></i> What is the accuracy rate of Derma Vision?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Derma Vision achieves a high accuracy rate for common skin conditions, but accuracy may vary depending on image quality and condition type. Always consult a healthcare professional for a final diagnosis.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-exclamation-triangle"></i> Can the system misidentify conditions?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Yes, as with any AI-based tool, there is a possibility of misidentification. The system is intended for preliminary screening and should not replace professional medical advice.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-section redesigned-faq-section" id="privacyFAQ" style="display:none;">
+        <h2 class="faq-section-title"><i class="fas fa-user-shield"></i> Privacy & Security</h2>
+        <div class="faq-grid redesigned-faq-grid">
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-user-lock"></i> Is my data safe?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        We take your privacy seriously. All uploaded images are processed securely and are not shared with third parties.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-shield-alt"></i> How is my privacy protected?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        We use industry-standard encryption to protect your data during upload and processing. Your images and information are never shared with third parties and are deleted after analysis.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-user-secret"></i> Who can access my uploaded images?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        Only authorized system processes can access your uploaded images for the purpose of analysis. No human staff reviews your images unless you explicitly request support.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item redesigned-faq-item">
+                <div class="faq-question">
+                    <span><i class="fas fa-trash-alt"></i> Are my images stored permanently?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        No, all uploaded images are automatically deleted from our servers after the analysis is complete to ensure your privacy and security.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section class="support-section">
     <div class="container">
@@ -116,7 +217,7 @@
                 <h2>Need More Help?</h2>
                 <p>Can't find what you're looking for? We're here to help!</p>
             </div>
-            <div class="support-cards" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+            <div class="support-cards">
                 <a href="{{ url_for('about') }}#contact" class="support-card">
                     <i class="fas fa-envelope"></i>
                     <h3>Contact Support</h3>

@@ -42,6 +42,17 @@ def save_users(users):
     with open('users.json', 'w') as f:
         json.dump(users, f, indent=4)
 
+def load_user_history():
+    try:
+        with open('user_history.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"history": {}}
+
+def save_user_history(history):
+    with open('user_history.json', 'w') as f:
+        json.dump(history, f, indent=4)
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -108,6 +119,10 @@ def login():
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
             session['user_id'] = user['id']
             session['email'] = user['email']
+            # Load user history and store in session
+            user_history = load_user_history()
+            user_id_str = str(user['id'])
+            session['history'] = user_history['history'].get(user_id_str, [])
             flash('Logged in successfully!', 'success')
             return redirect(url_for('index'))  # Changed from home to index
         else:

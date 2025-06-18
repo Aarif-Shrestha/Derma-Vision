@@ -14,6 +14,7 @@
     border: 1.5px solid rgba(220, 230, 255, 0.13);
     backdrop-filter: blur(4px) saturate(120%);
     animation: popup-fade-in 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    min-height: 650px !important; /* Ensures the container looks full even with less content */
 }
 
 .detect-header {
@@ -321,6 +322,41 @@
 .guideline-card p {
     color: var(--secondary-color);
     font-size: 1rem;
+}
+
+/* Separator */
+.detect-separator {
+    border: none;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, #e3f0fc 0%, #2c7be5 50%, #e3f0fc 100%);
+    border-radius: 2px;
+    margin: 2.5rem 0 2.5rem 0;
+    opacity: 0.95;
+    box-shadow: 0 2px 8px 0 rgba(44, 123, 229, 0.10);
+    position: relative;
+}
+.detect-separator::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 0;
+    height: 100%;
+    border-radius: 2px;
+    background: rgba(44, 123, 229, 0.08);
+    z-index: 0;
+}
+
+/* Detect Row */
+.detect-row {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 0;
+    padding: 0.5rem 0;
 }
 
 /* Responsive Design */

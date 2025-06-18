@@ -9,6 +9,11 @@
             "id": 2,
             "email": "dip.2062.07.13@gmail.com",
             "password": "$2b$12$9JyJygoTpNECM.M/Mo0bS.0DFc7xzfyGemTZsuvs8X5bPq8mLvW6a"
+        },
+        {
+            "id": 3,
+            "email": "dip.kandel@mail.bcu.ac.uk",
+            "password": "$2b$12$5xDKmmxqEmckbC8WeT5QvuOB4oifayUbbtj2GU.dHmBCBjWO9TzuS"
         }
     ]
 }

@@ -21,14 +21,28 @@
 
 {% block content %}
 <div class="detect-container">
-    <div class="detect-header">
+    <div class="detect-row detect-header">
         <div class="section-header">
             <h1>Skin Disease Detection</h1>
             <p>Upload a clear image of the affected skin area for AI-powered analysis and get instant results with high accuracy.</p>
         </div>
+        <div class="info-bar">
+            <i class="fas fa-info-circle"></i>
+            <span>Supported formats: JPG, PNG, JPEG | Max size: 16MB</span>
+        </div>
     </div>
-
-    <div class="upload-section">
+    <hr class="detect-separator">
+    <div class="detect-row upload-section">
+        <div class="upload-guidelines">
+            <h4>Image Guidelines</h4>
+            <ul>
+                <li>Use natural daylight for best results</li>
+                <li>Ensure the area is in focus and well-lit</li>
+                <li>Include some healthy skin for context</li>
+                <li>Avoid using flash or filters</li>
+            </ul>
+        </div>
+        <hr class="detect-separator" style="width:90%;margin:1.2rem auto;">
         {% if not session.get('user_id') %}
             <div class="alert alert-error" style="margin-bottom:1.5rem;">Please log in to use the detection feature.</div>
         {% else %}
@@ -50,8 +64,8 @@
             </div>
         {% endif %}
     </div>
-
-    <div class="detection-result" id="resultSection" style="margin-top: 2.5rem; display:none;">
+    <hr class="detect-separator">
+    <div class="detect-row detection-result" id="resultSection" style="margin-top: 2.5rem; display:none;">
         <div class="result-header">
             <h2>Detection Results</h2>
             <button class="btn btn-primary" id="downloadReportBtn">
@@ -67,26 +81,13 @@
                     <div class="confidence-level" style="width: 95%"></div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="guidelines">
-        <h2>Image Guidelines</h2>
-        <div class="guidelines-grid">
-            <div class="guideline-card">
-                <i class="fas fa-camera"></i>
-                <h3>Good Lighting</h3>
-                <p>Ensure the image is taken in well-lit conditions for better accuracy.</p>
-            </div>
-            <div class="guideline-card">
-                <i class="fas fa-expand"></i>
-                <h3>Clear Focus</h3>
-                <p>Take a clear, focused image of the affected area without blur.</p>
-            </div>
-            <div class="guideline-card">
-                <i class="fas fa-crop"></i>
-                <h3>Proper Framing</h3>
-                <p>Center the affected area in the frame and avoid unnecessary background.</p>
+            <div class="result-tips">
+                <h4>What to do next?</h4>
+                <ul>
+                    <li>Consult a healthcare professional for a final diagnosis</li>
+                    <li>Do not self-medicate based on AI results</li>
+                    <li>Keep a record of your results for future reference</li>
+                </ul>
             </div>
         </div>
     </div>
