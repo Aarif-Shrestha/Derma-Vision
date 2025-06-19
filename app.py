@@ -171,6 +171,8 @@ def detect():
         if not is_skin_related_image(filepath):
             return jsonify({'error': 'The uploaded image does not appear to be a skin lesion or skin disease.'}), 400
         # --- End Gemini check ---
+        if model is None:
+            return jsonify({'error': 'Model is still loading, please try again in a few seconds.'}), 503
         img_array = preprocess_image(filepath)
         prediction = model.predict(img_array)
         # Use fixed class names for prediction
@@ -191,7 +193,8 @@ def detect():
         result = {
             'predicted_label': predicted_label,
             'class_probabilities': class_probabilities,
-            'image_url': url_for('static', filename=f'uploads/{filename}', _external=True)
+            'image_url': url_for('static', filename=f'uploads/{filename}', _external=True),
+            'recommendations': [rec.lstrip('- ').strip() for rec in get_recommendations(predicted_label).split('\n') if rec.strip()]
         }
         return jsonify(result)
     return jsonify({'error': 'Invalid file type'}), 400
