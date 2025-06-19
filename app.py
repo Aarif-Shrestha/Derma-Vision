@@ -234,6 +234,23 @@ def download_report_pdf(report_id):
     
     return response
 
+def get_recommendations(condition_name):
+    recommendations = {
+        "Basal Cell Carcinoma (bcc)": "Consult a dermatologist for treatment options. Early intervention is important. Avoid sun exposure and use sunscreen.",
+        "Benign Keratosis-like Lesions (bkl)": "These are usually harmless, but monitor for changes. If you notice rapid growth or color change, consult a dermatologist.",
+        "Dermatofibroma (df)": "Generally benign and do not require treatment. If painful or changing, seek medical advice.",
+        "Melanoma (mel)": "Seek immediate medical attention. Melanoma can be life-threatening if not treated early.",
+        "Melanocytic Nevi (nv)": "Common moles are usually harmless. Monitor for changes in size, shape, or color. See a dermatologist if changes occur.",
+        "Vascular Lesions (vasc)": "Most are benign, but if you notice bleeding or rapid growth, consult a healthcare provider.",
+        "Actinic Keratosis (ak)": "Precancerous lesion. Consult a dermatologist for evaluation and possible treatment. Protect skin from sun exposure.",
+        "Seborrheic Keratosis (sk)": "Benign skin growth. No treatment needed unless it becomes irritated or for cosmetic reasons.",
+        "Squamous Cell Carcinoma (scc)": "Consult a dermatologist promptly. Early treatment is important to prevent spread.",
+        "Lentigo (lentigo)": "Usually benign, but monitor for changes. If in doubt, consult a dermatologist.",
+        "Atypical Nevus (atypical nevus)": "Monitor closely for changes. Increased risk for melanoma. Regular skin checks recommended.",
+        "Pyogenic Granuloma (pg)": "Benign vascular lesion. May bleed easily. Consult a healthcare provider if bothersome or recurrent."
+    }
+    return recommendations.get(condition_name, "Consult a healthcare professional for further advice.")
+
 @app.route('/download_report', methods=['POST'])
 def download_report():
     try:
@@ -311,6 +328,11 @@ def download_report():
         ]))
         elements.append(disease_table)
         elements.append(Spacer(1, 24))
+        # Add recommendations section
+        recommendations = get_recommendations(report_data['condition_name'])
+        elements.append(Paragraph('<b>Recommendations:</b>', styles['Heading3']))
+        elements.append(Paragraph(recommendations, styles['Normal']))
+        elements.append(Spacer(1, 18))
 
         # Add uploaded image if available
         if report_data['image_url']:
@@ -426,6 +448,11 @@ def download_latest_report():
         ]))
         elements.append(disease_table)
         elements.append(Spacer(1, 24))
+        # Add recommendations section
+        recommendations = get_recommendations(report_data['condition_name'])
+        elements.append(Paragraph('<b>Recommendations:</b>', styles['Heading3']))
+        elements.append(Paragraph(recommendations, styles['Normal']))
+        elements.append(Spacer(1, 18))
 
         # Add uploaded image if available
         if report_data['image_url']:
