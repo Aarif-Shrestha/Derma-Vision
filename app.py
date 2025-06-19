@@ -465,24 +465,29 @@ def download_latest_report():
 genai.configure(api_key="AIzaSyA1o8P4FE8B77mBPNwJHCqEyLdzyOdaVmY")  # ← REPLACE with your actual key
 
 def is_skin_related_image(image_path):
-    img = Image.open(image_path)
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    response = model.generate_content(
-        ["""You are a strict skin disease screening assistant.\nOnly reply with YES or NO: Does this image contain a human skin lesion or skin disease?\nAvoid being overly generous — say NO if unsure.\n""", img]
-    )
-    result = response.text.strip().lower()
-    print("Gemini raw response:", result)
-    return result.startswith("yes")
+    try:
+        img = Image.open(image_path)
+    except Exception as e:
+        print(f"[ERROR] Failed to open image for Gemini check: {e}")
+        return False
+    try:
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content([
+            """You are a strict skin disease screening assistant.\nOnly reply with YES or NO: Does this image contain a human skin lesion or skin disease?\nAvoid being overly generous — say NO if unsure.\n""", img
+        ])
+        result = response.text.strip().lower()
+        print("Gemini raw response:", result)
+        return result.startswith("yes")
+    except Exception as e:
+        print(f"[ERROR] Gemini API call failed: {e}")
+        return False
 
 def preprocess_image(filepath):
-    """
-    Preprocess an image for model prediction.
-    Args:
-        filepath (str): Path to the image file.
-    Returns:
-        np.ndarray: Preprocessed image array ready for model prediction.
-    """
-    img = Image.open(filepath).convert('RGB')
+    try:
+        img = Image.open(filepath).convert('RGB')
+    except Exception as e:
+        print(f"[ERROR] Failed to open image for preprocessing: {e}")
+        raise
     img = img.resize((224, 224))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
