@@ -2,18 +2,8 @@
     "users": [
         {
             "id": 1,
-            "email": "dip@example.com",
-            "password": "$2b$12$Ir7MWbiZjna.XJU8rVggNOJscaxJte4W9u2vogmTJo0RbSHbl2iQ6"
-        },
-        {
-            "id": 2,
-            "email": "dip.2062.07.13@gmail.com",
-            "password": "$2b$12$9JyJygoTpNECM.M/Mo0bS.0DFc7xzfyGemTZsuvs8X5bPq8mLvW6a"
-        },
-        {
-            "id": 3,
-            "email": "dip.kandel@mail.bcu.ac.uk",
-            "password": "$2b$12$5xDKmmxqEmckbC8WeT5QvuOB4oifayUbbtj2GU.dHmBCBjWO9TzuS"
+            "email": "darpan@example.com",
+            "password": "$2b$12$j/yX7MSUWKGW7lhDaw9GbeU5FnKMZHNH7vNHTef5fpetH9hP0Moxu"
         }
     ]
 }

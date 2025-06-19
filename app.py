@@ -8,10 +8,8 @@ from functools import wraps
 from datetime import datetime
 import io
 import time
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from tensorflow import keras
+from PIL import Image
 
 app = Flask(__name__)
 app.secret_key = 'eefbca0d0f8710f182def35e827248045dafc9592fe6cd45af93ae784a6e04d3'  # Change this to a secure secret key
@@ -23,12 +21,20 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load model at server startup so it is always available for predictions
 MODEL_PATH = os.path.join(app.root_path, 'models', 'thisisit.keras')
-print("[INFO] Loading model, please wait...", flush=True)
-for i in range(3):
-    print("[INFO] Loading" + "." * (i+1), flush=True)
-    time.sleep(0.5)
-model = keras.models.load_model(MODEL_PATH)
-print("[INFO] Model loaded successfully!", flush=True)
+# Load model in a background thread so server starts immediately
+import threading
+model = None
+
+def load_model_bg():
+    global model
+    print("[INFO] Loading model, please wait...", flush=True)
+    for i in range(3):
+        print("[INFO] Loading" + "." * (i+1), flush=True)
+        time.sleep(0.5)
+    model = keras.models.load_model(MODEL_PATH)
+    print("[INFO] Model loaded successfully!", flush=True)
+
+threading.Thread(target=load_model_bg, daemon=True).start()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -236,9 +242,190 @@ def download_report():
             'confidence': data.get('confidence', 'N/A'),
             'image_url': data.get('image_url', None),
         }
-        html = render_template('report_template.html', **report_data)
-        pdf = pdfkit.from_string(html, False)
-        response = make_response(pdf)
+
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.utils import ImageReader
+        from reportlab.lib import colors
+        from reportlab.lib.styles import getSampleStyleSheet
+        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Image as RLImage, Table, TableStyle
+        import io
+
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Add logo
+        logo_path = os.path.join(app.root_path, 'static', 'images', 'logo.png')
+        if os.path.exists(logo_path):
+            logo = RLImage(logo_path, width=100, height=100)
+            elements.append(logo)
+            elements.append(Spacer(1, 12))
+
+        # Title
+        title = Paragraph('<font size=20 color="#2E86C1"><b>Derma Vision Disease Report</b></font>', styles['Title'])
+        elements.append(title)
+        elements.append(Spacer(1, 18))
+
+        # Patient and report info
+        info_table = Table([
+            ['<b>Report ID:</b>', report_data['report_id']],
+            ['<b>Date:</b>', report_data['report_date']],
+            ['<b>Time:</b>', report_data['report_time']],
+            ['<b>Patient Name:</b>', report_data['patient_name']],
+        ], colWidths=[120, 300])
+        info_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#D6EAF8')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#154360')),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        elements.append(info_table)
+        elements.append(Spacer(1, 18))
+
+        # Disease info
+        disease_table = Table([
+            ['<b>Condition Name</b>', '<b>Confidence</b>'],
+            [report_data['condition_name'], report_data['confidence']],
+        ], colWidths=[220, 200])
+        disease_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#AED6F1')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#1B2631')),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(disease_table)
+        elements.append(Spacer(1, 24))
+
+        # Add uploaded image if available
+        if report_data['image_url']:
+            img_filename = os.path.basename(report_data['image_url'])
+            img_path = os.path.join(app.root_path, 'static', 'uploads', img_filename)
+            if os.path.exists(img_path):
+                uploaded_img = RLImage(img_path, width=200, height=200)
+                elements.append(Paragraph('<b>Uploaded Image:</b>', styles['Heading3']))
+                elements.append(uploaded_img)
+                elements.append(Spacer(1, 18))
+
+        # Add a footer
+        elements.append(Spacer(1, 36))
+        footer = Paragraph('<font size=10 color="#85929E">Generated by Derma Vision &copy; {}</font>'.format(datetime.now().year), styles['Normal'])
+        elements.append(footer)
+
+        doc.build(elements)
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        response = app.make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f"attachment; filename=DermaVision_Report_{report_data['report_id']}.pdf"
+        return response
+    except Exception as e:
+        print('PDF generation error:', e)
+        return jsonify({'error': 'Failed to generate PDF report. Please contact support.'}), 500
+
+@app.route('/download_latest_report', methods=['POST'])
+@login_required
+def download_latest_report():
+    try:
+        data = request.json or {}
+        # Example: get latest prediction data from session or database
+        report_data = {
+            'report_id': data.get('report_id', 'RPT-' + datetime.now().strftime('%Y%m%d%H%M%S')),
+            'report_date': data.get('report_date', datetime.now().strftime('%Y-%m-%d')),
+            'report_time': data.get('report_time', datetime.now().strftime('%H:%M:%S')),
+            'patient_name': data.get('patient_name', 'Anonymous'),
+            'condition_name': data.get('condition_name', 'Unknown'),
+            'confidence': data.get('confidence', 'N/A'),
+            'image_url': data.get('image_url', None),
+        }
+
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.utils import ImageReader
+        from reportlab.lib import colors
+        from reportlab.lib.styles import getSampleStyleSheet
+        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Image as RLImage, Table, TableStyle
+        import io
+
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Add logo
+        logo_path = os.path.join(app.root_path, 'static', 'images', 'logo.png')
+        if os.path.exists(logo_path):
+            logo = RLImage(logo_path, width=100, height=100)
+            elements.append(logo)
+            elements.append(Spacer(1, 12))
+
+        # Title
+        title = Paragraph('<font size=20 color="#2E86C1"><b>Derma Vision Disease Report</b></font>', styles['Title'])
+        elements.append(title)
+        elements.append(Spacer(1, 18))
+
+        # Patient and report info
+        info_table = Table([
+            ['<b>Report ID:</b>', report_data['report_id']],
+            ['<b>Date:</b>', report_data['report_date']],
+            ['<b>Time:</b>', report_data['report_time']],
+            ['<b>Patient Name:</b>', report_data['patient_name']],
+        ], colWidths=[120, 300])
+        info_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#D6EAF8')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#154360')),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        elements.append(info_table)
+        elements.append(Spacer(1, 18))
+
+        # Disease info
+        disease_table = Table([
+            ['<b>Condition Name</b>', '<b>Confidence</b>'],
+            [report_data['condition_name'], report_data['confidence']],
+        ], colWidths=[220, 200])
+        disease_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#AED6F1')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#1B2631')),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(disease_table)
+        elements.append(Spacer(1, 24))
+
+        # Add uploaded image if available
+        if report_data['image_url']:
+            img_filename = os.path.basename(report_data['image_url'])
+            img_path = os.path.join(app.root_path, 'static', 'uploads', img_filename)
+            if os.path.exists(img_path):
+                uploaded_img = RLImage(img_path, width=200, height=200)
+                elements.append(Paragraph('<b>Uploaded Image:</b>', styles['Heading3']))
+                elements.append(uploaded_img)
+                elements.append(Spacer(1, 18))
+
+        # Add a footer
+        elements.append(Spacer(1, 36))
+        footer = Paragraph('<font size=10 color="#85929E">Generated by Derma Vision &copy; {}</font>'.format(datetime.now().year), styles['Normal'])
+        elements.append(footer)
+
+        doc.build(elements)
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        response = app.make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = f"attachment; filename=DermaVision_Report_{report_data['report_id']}.pdf"
         return response
