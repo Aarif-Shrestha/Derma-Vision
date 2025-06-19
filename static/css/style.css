@@ -11,7 +11,7 @@
     --white: #FFFFFF;
     --error-color: #dc3545;
     --success-color: #28a745;
-    
+
     /* Layout Variables */
     --section-padding: 4rem 0;
     --container-padding: 0 1rem;
@@ -48,6 +48,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Layout */
+main {
+    flex: 1;
+    margin-top: 0;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 0;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
@@ -70,7 +79,7 @@ p {
 /* Layout */
 main {
     flex: 1;
-    margin-top: var(--navbar-height);
+    margin-top: 0;
     width: 100%;
     overflow: hidden;
 }
@@ -86,6 +95,18 @@ section {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--container-padding);
+    margin-top: var(--navbar-height);
+}
+
+/* Prevent .navbar .container from inheriting margin-top */
+.navbar .container {
+    margin-top: 0;
+}
+
+/* Utility: Add this to any container/section that needs navbar offset */
+.with-navbar-offset {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
 }
 
 /* Shared Hero Section Styles */
@@ -612,8 +633,9 @@ section {
 
 @media (max-width: 576px) {
     .container {
-        width: 100%;
-        padding: 0 1rem;
+        max-width: 100vw;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 
     h1 { font-size: 2rem; }

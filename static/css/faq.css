@@ -290,6 +290,8 @@
     gap: 2rem;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     margin-top: 2.5rem;
 }
 
@@ -304,6 +306,7 @@
         grid-template-columns: 1fr;
         gap: 1.2rem;
         align-items: center;
+        justify-items: center;
     }
     .support-card {
         max-width: 95vw;
@@ -328,6 +331,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .support-card:hover {
@@ -388,6 +392,7 @@
 
     .support-buttons {
         flex-direction: column;
+        gap: 1.2rem;
     }
 
     .support-btn {

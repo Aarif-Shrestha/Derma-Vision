@@ -244,6 +244,9 @@
     border: 10px solid var(--white);
     padding: 3rem 2rem 2.5rem 2rem;
     box-sizing: border-box;
+    min-width: 220px;
+    min-height: 220px;
+    font-size: 1.25rem;
 }
 
 .step-circle:first-child {
@@ -361,11 +364,48 @@
     .steps-overlap {
         flex-direction: column;
         align-items: center;
+        gap: 2.5rem;
+        position: relative;
     }
     .step-circle {
-        width: 180px;
-        height: 180px;
-        margin-bottom: 1.5rem;
+        width: 260px;
+        height: 260px;
+        min-width: 260px;
+        min-height: 260px;
+        font-size: 1.15rem;
+        padding: 1.5rem 1rem 1.5rem 1rem;
+        margin-bottom: 0;
+    }
+    .steps-overlap::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--primary-color), var(--primary-accent));
+        z-index: 0;
+        transform: translateX(-50%);
+        height: 100%;
+        display: block;
+    }
+    .step-circle {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0;
+    }
+    .step-circle:not(:last-child) {
+        margin-bottom: 2.5rem;
+    }
+}
+@media (max-width: 480px) {
+    .step-circle {
+        width: 220px;
+        height: 220px;
+        min-width: 220px;
+        min-height: 220px;
+        font-size: 1.05rem;
+        padding: 1rem 0.5rem 1rem 0.5rem;
     }
 }
 
