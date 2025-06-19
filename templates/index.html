@@ -4,6 +4,54 @@
 
 {% block additional_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<style>
+.hero-img-responsive {
+    max-width: 350px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+    background: #fff;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+}
+
+@media (max-width: 900px) {
+    .hero-content-wrapper {
+        flex-direction: column;
+        gap: 2rem !important;
+        align-items: center;
+    }
+
+    .hero-img-responsive {
+        max-width: 90vw;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-content-wrapper {
+        flex-direction: column;
+        gap: 1.5rem !important;
+        align-items: center;
+    }
+
+    .hero-img-responsive {
+        max-width: 100vw;
+        padding: 0.5rem;
+        border-radius: 1rem;
+    }
+
+    .hero-content {
+        text-align: center !important;
+        align-items: center !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block hero %}
@@ -19,7 +67,7 @@
                 </div>
             </div>
             <div>
-                <img src="{{ url_for('static', filename='images/hero-image.jpg') }}" alt="AI Skin Analysis">
+                <img src="{{ url_for('static', filename='images/Hero-section.jpg') }}" alt="Hero Section" class="hero-img-responsive" />
             </div>
         </div>
     </div>
