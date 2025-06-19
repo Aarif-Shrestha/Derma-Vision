@@ -475,7 +475,52 @@
     line-height: 1.5;
 }
 
-/* Responsive Design */
+/* Mission & Vision Grid */
+.mission-vision-grid {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.mission-card, .vision-card {
+    flex: 1 1 260px;
+    min-width: 220px;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(44,123,229,0.08);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.mission-card:hover, .vision-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(44,123,229,0.15);
+}
+
+.mission-card i, .vision-card i {
+    font-size: 3.5rem;
+    color: #2c7be5;
+    margin-bottom: 1.2rem;
+    animation: missionVisionIconPulse 1.5s infinite alternate cubic-bezier(0.4,0,0.2,1);
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+@keyframes missionVisionIconPulse {
+    0% {
+        transform: scale(1) rotate(-6deg);
+        filter: drop-shadow(0 2px 8px #2c7be5aa);
+    }
+    100% {
+        transform: scale(1.18) rotate(6deg);
+        filter: drop-shadow(0 8px 24px #2c7be5cc);
+    }
+}
+
 @media (max-width: 992px) {
     .mission-grid,
     .contact-grid {
@@ -535,4 +580,57 @@
         flex-direction: column;
         align-items: center;
     }
+
+    .mission-vision-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    .mission-card, .vision-card {
+        max-width: 90vw;
+    }
+}
+
+/* Thunder Awakening Animation for Team Cards */
+@keyframes thunderFlash {
+    0% {
+        box-shadow: 0 0 0 0 #ffe066, 0 0 0 0 #fff, 0 0 0 0 #fff;
+        filter: brightness(1) contrast(1);
+    }
+    8% {
+        box-shadow: 0 0 32px 12px #ffe066, 0 0 64px 24px #fff, 0 0 128px 48px #fffbe6;
+        filter: brightness(2.5) contrast(1.3) drop-shadow(0 0 32px #ffe066);
+    }
+    16% {
+        box-shadow: 0 0 0 0 #ffe066, 0 0 0 0 #fff, 0 0 0 0 #fffbe6;
+        filter: brightness(1.1) contrast(1.1);
+    }
+    22% {
+        box-shadow: 0 0 40px 16px #ffe066, 0 0 80px 32px #fff, 0 0 160px 64px #fffbe6;
+        filter: brightness(3) contrast(1.5) drop-shadow(0 0 40px #ffe066);
+    }
+    30% {
+        box-shadow: 0 0 0 0 #ffe066, 0 0 0 0 #fff, 0 0 0 0 #fffbe6;
+        filter: brightness(1) contrast(1);
+    }
+    40% {
+        box-shadow: 0 0 24px 8px #ffe066, 0 0 48px 16px #fff, 0 0 96px 32px #fffbe6;
+        filter: brightness(2) contrast(1.2) drop-shadow(0 0 24px #ffe066);
+    }
+    50% {
+        box-shadow: 0 0 0 0 #ffe066, 0 0 0 0 #fff, 0 0 0 0 #fffbe6;
+        filter: brightness(1) contrast(1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 #ffe066, 0 0 0 0 #fff, 0 0 0 0 #fffbe6;
+        filter: brightness(1) contrast(1);
+    }
+}
+
+.team-cards-grid .awakening-animation.thunder {
+    /* Initial load animation remains for entrance */
+}
+
+.team-cards-grid .awakening-animation.thunder:hover {
+    animation: awakeningFadeIn 0.8s cubic-bezier(0.4,0,0.2,1) forwards, thunderFlash 0.8s 0.05s linear;
+    box-shadow: 0 0 0 0 #fff;
 }
