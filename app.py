@@ -1,19 +1,20 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file, make_response, render_template_string
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file
 from werkzeug.utils import secure_filename
 import os
 import numpy as np
-from PIL import Image
-import keras
 import json
 import bcrypt
 from functools import wraps
-import pdfkit
 from datetime import datetime
 import io
 import time
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.imagenet_utils import preprocess_input
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
+app.secret_key = 'eefbca0d0f8710f182def35e827248045dafc9592fe6cd45af93ae784a6e04d3'  # Change this to a secure secret key
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
