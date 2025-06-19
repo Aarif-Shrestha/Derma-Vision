@@ -9,7 +9,7 @@ from datetime import datetime
 import io
 import time
 from tensorflow import keras
-from PIL import Image
+from PIL import Image, ImageOps
 import google.generativeai as genai
 
 app = Flask(__name__)
@@ -484,10 +484,17 @@ def is_skin_related_image(image_path):
 
 def preprocess_image(filepath):
     try:
-        img = Image.open(filepath).convert('RGB')
+        img = Image.open(filepath)
+        img = ImageOps.exif_transpose(img)  # Correct orientation
+        img = img.convert('RGB')
     except Exception as e:
         print(f"[ERROR] Failed to open image for preprocessing: {e}")
         raise
+    # Center crop to square
+    min_side = min(img.size)
+    left = (img.width - min_side) // 2
+    top = (img.height - min_side) // 2
+    img = img.crop((left, top, left + min_side, top + min_side))
     img = img.resize((224, 224))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
