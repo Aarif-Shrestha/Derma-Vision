@@ -1,1 +1,16 @@
+.venv
+.env
 models/thisisit.keras
+__pycache__/
+# Byte-compiled files
+*.py[cod]
+# C extensions
+*.so
+# Distribution / packaging
+.Python
+build/
+dist/
+# PyInstaller
+#  Usually contains a lot of files, so better to ignore it
+#  see https://pyinstaller.readthedocs.io/en/stable/usage.html#options
+#  for more information
