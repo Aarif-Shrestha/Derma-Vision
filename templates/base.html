@@ -100,7 +100,7 @@
                 </a>
             </div>
             <div class="nav-links">
-                <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active"{% endif %}>Home</a>
+                <a href="{{ url_for('index') }}" {% if request.endpoint in ['index', 'home'] %}class="active"{% endif %}>Home</a>
                 <a href="{{ url_for('about') }}" {% if request.endpoint == 'about' %}class="active"{% endif %}>About</a>
                 <a href="{{ url_for('detect') }}" {% if request.endpoint == 'detect' %}class="active"{% endif %}>Detect</a>
                 <a href="{{ url_for('faq') }}" {% if request.endpoint == 'faq' %}class="active"{% endif %}>FAQ</a>

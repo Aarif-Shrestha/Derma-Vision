@@ -3,15 +3,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuBtn = document.querySelector('.menu-btn');
     const navLinks = document.querySelector('.nav-links');
 
-    if (menuBtn) {
-        menuBtn.addEventListener('click', () => {
+    // Hamburger menu toggle for mobile
+    if (menuBtn && navLinks) {
+        menuBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event bubbling
             navLinks.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+            if (navLinks.classList.contains('active')) {
+                navLinks.style.animation = 'slideDown 0.3s ease';
+            } else {
+                navLinks.style.animation = 'slideUp 0.2s ease';
+            }
         });
     }
 
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.navbar')) {
+    // Close mobile menu when clicking outside or on a nav link
+    document.addEventListener('click', function(e) {
+        if (navLinks.classList.contains('active') && !e.target.closest('.navbar')) {
+            navLinks.classList.remove('active');
+            menuBtn.classList.remove('active');
+            navLinks.style.animation = 'slideUp 0.2s ease';
+        }
+    });
+    navLinks && navLinks.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+            menuBtn.classList.remove('active');
+            navLinks.style.animation = 'slideUp 0.2s ease';
+        });
+    });
 
     // Image upload preview
     const imageUpload = document.getElementById('imageUpload');
@@ -19,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadForm');
     const resultSection = document.getElementById('resultSection');
     const loadingSpinner = document.getElementById('loadingSpinner');
-    });
+
     if (imageUpload) {
         imageUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -57,7 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Display results
                 resultSection.innerHTML = `
                     <h3>Analysis Results</h3>
-                    <p>${result.message}</p>
+                    <img src="${result.image_url}" alt="Uploaded Image" style="max-width: 300px; display: block; margin-bottom: 10px;" />
+                    <pre>Prediction: ${JSON.stringify(result.prediction, null, 2)}</pre>
                 `;
                 resultSection.style.display = 'block';
 
@@ -69,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
-  setupThemeToggle();
-  setupPasswordToggle();
+    setupThemeToggle();
+    setupPasswordToggle();
 });

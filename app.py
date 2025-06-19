@@ -3,24 +3,31 @@ from werkzeug.utils import secure_filename
 import os
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+import keras
 import json
 import bcrypt
 from functools import wraps
 import pdfkit
 from datetime import datetime
 import io
+import time
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Load model (commented out until model is available)
-# model = tf.keras.models.load_model('skin.keras')
+# Load model at server startup so it is always available for predictions
+MODEL_PATH = os.path.join(app.root_path, 'models', 'thisisit.keras')
+print("[INFO] Loading model, please wait...", flush=True)
+for i in range(3):
+    print("[INFO] Loading" + "." * (i+1), flush=True)
+    time.sleep(0.5)
+model = keras.models.load_model(MODEL_PATH)
+print("[INFO] Model loaded successfully!", flush=True)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -58,7 +65,7 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             flash('Please log in to access this page.', 'error')
-            return redirect(url_for('login'))
+            return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -109,6 +116,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    next_url = request.args.get('next')
     if request.method == 'POST':
         users_data = load_users()
         email = request.form['email']
@@ -124,12 +132,12 @@ def login():
             user_id_str = str(user['id'])
             session['history'] = user_history['history'].get(user_id_str, [])
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('index'))  # Changed from home to index
+            return redirect(next_url or url_for('index'))  # Changed from home to index
         else:
             flash('Invalid email or password', 'error')
-            return redirect(url_for('login'))
-    
-    return render_template('login.html')
+            return redirect(url_for('login', next=next_url))
+
+    return render_template('login.html', next=next_url)
 
 @app.route('/logout')
 def logout():
@@ -140,36 +148,41 @@ def logout():
 @app.route('/detect', methods=['GET', 'POST'])
 @login_required
 def detect():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file part'})
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'})
-        
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            
-            # Image preprocessing (commented out until model is available)
-            """
-            img = Image.open(filepath)
-            img = img.resize((224, 224))  # Adjust size according to your model
-            img_array = np.array(img)
-            img_array = np.expand_dims(img_array, axis=0)
-            
-            # Make prediction
-            prediction = model.predict(img_array)
-            result = {'prediction': prediction.tolist()}
-            """
-            
-            # Temporary response until model is integrated
-            result = {'message': 'Image uploaded successfully'}
-            return jsonify(result)
-            
-    return render_template('detect.html')
+    if request.method == 'GET':
+        return render_template('detect.html')
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        img_array = preprocess_image(filepath)
+        prediction = model.predict(img_array)
+        # Use fixed class names for prediction
+        class_names = [
+            "Basal Cell Carcinoma (bcc)",
+            "Benign Keratosis-like Lesions (bkl)",
+            "Dermatofibroma (df)",
+            "Melanoma (mel)",
+            "Melanocytic Nevi (nv)",
+            "Vascular Lesions (vasc)"
+        ]
+        if hasattr(prediction, 'tolist'):
+            prediction = prediction.tolist()
+        if isinstance(prediction, list) and isinstance(prediction[0], list):
+            prediction = prediction[0]
+        class_probabilities = {name: float(prob) for name, prob in zip(class_names, prediction)}
+        predicted_label = class_names[int(np.argmax(list(class_probabilities.values())))]
+        result = {
+            'predicted_label': predicted_label,
+            'class_probabilities': class_probabilities,
+            'image_url': url_for('static', filename=f'uploads/{filename}', _external=True)
+        }
+        return jsonify(result)
+    return jsonify({'error': 'Invalid file type'}), 400
 
 @app.route('/faq')
 def faq():
@@ -211,26 +224,41 @@ def download_report_pdf(report_id):
 
 @app.route('/download_report', methods=['POST'])
 def download_report():
-    # Get data from request (simulate or use actual detection data)
-    data = request.json or {}
-    # Example data, replace with actual detection result
-    report_data = {
-        'report_id': data.get('report_id', 'RPT-' + datetime.now().strftime('%Y%m%d%H%M%S')),
-        'report_date': datetime.now().strftime('%Y-%m-%d'),
-        'report_time': datetime.now().strftime('%H:%M:%S'),
-        'patient_name': data.get('patient_name', 'Anonymous'),
-        'condition_name': data.get('condition_name', 'Unknown'),
-        'confidence': data.get('confidence', 'N/A'),
-        'image_url': data.get('image_url', None),
-    }
-    # Render HTML report
-    html = render_template('report_template.html', **report_data)
-    # Generate PDF from HTML
-    pdf = pdfkit.from_string(html, False)
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=DermaVision_Report_{}.pdf'.format(report_data['report_id'])
-    return response
+    try:
+        data = request.json or {}
+        report_data = {
+            'report_id': data.get('report_id', 'RPT-' + datetime.now().strftime('%Y%m%d%H%M%S')),
+            'report_date': data.get('report_date', datetime.now().strftime('%Y-%m-%d')),
+            'report_time': data.get('report_time', datetime.now().strftime('%H:%M:%S')),
+            'patient_name': data.get('patient_name', 'Anonymous'),
+            'condition_name': data.get('condition_name', 'Unknown'),
+            'confidence': data.get('confidence', 'N/A'),
+            'image_url': data.get('image_url', None),
+        }
+        html = render_template('report_template.html', **report_data)
+        pdf = pdfkit.from_string(html, False)
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f"attachment; filename=DermaVision_Report_{report_data['report_id']}.pdf"
+        return response
+    except Exception as e:
+        print('PDF generation error:', e)
+        return jsonify({'error': 'Failed to generate PDF report. Please contact support.'}), 500
+
+def preprocess_image(filepath):
+    """
+    Preprocess an image for model prediction.
+    Args:
+        filepath (str): Path to the image file.
+    Returns:
+        np.ndarray: Preprocessed image array ready for model prediction.
+    """
+    img = Image.open(filepath).convert('RGB')
+    img = img.resize((224, 224))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = img_array.astype(np.float32) / 255.0
+    return img_array
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -5,7 +5,34 @@
 {% block additional_styles %}
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/detect.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detect.css', _external=false) }}">
+<style>
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+.loading-overlay.active {
+    display: flex;
+}
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 {% endblock %}
 
 {% block hero %}
@@ -153,13 +180,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle detection
     detectBtn.addEventListener('click', async () => {
-        loadingOverlay.style.display = 'flex';
-        
-        // Simulate API call (replace with actual API call)
-        setTimeout(() => {
-            loadingOverlay.style.display = 'none';
+        if (!fileInput.files[0]) {
+            alert('Please select an image first.');
+            return;
+        }
+        loadingOverlay.classList.add('active');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        try {
+            const response = await fetch('/detect', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            loadingOverlay.classList.remove('active');
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+            // Show result section
             resultSection.style.display = 'block';
-        }, 2000);
+            // Update result section with backend response
+            document.getElementById('conditionName').innerText = result.predicted_label || 'Unknown';
+            // Find max probability for confidence
+            let maxProb = 0;
+            if (result.class_probabilities) {
+                maxProb = Math.max(...Object.values(result.class_probabilities));
+                document.getElementById('confidenceValue').innerText = (maxProb * 100).toFixed(2) + '%';
+                document.querySelector('.confidence-level').style.width = (maxProb * 100) + '%';
+            } else {
+                document.getElementById('confidenceValue').innerText = 'N/A';
+                document.querySelector('.confidence-level').style.width = '0%';
+            }
+        } catch (error) {
+            loadingOverlay.classList.remove('active');
+            alert('An error occurred while processing your request.');
+        }
     });
 
     // Handle reset
