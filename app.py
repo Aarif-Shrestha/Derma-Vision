@@ -236,20 +236,51 @@ def download_report_pdf(report_id):
 
 def get_recommendations(condition_name):
     recommendations = {
-        "Basal Cell Carcinoma (bcc)": "Consult a dermatologist for treatment options. Early intervention is important. Avoid sun exposure and use sunscreen.",
-        "Benign Keratosis-like Lesions (bkl)": "These are usually harmless, but monitor for changes. If you notice rapid growth or color change, consult a dermatologist.",
-        "Dermatofibroma (df)": "Generally benign and do not require treatment. If painful or changing, seek medical advice.",
-        "Melanoma (mel)": "Seek immediate medical attention. Melanoma can be life-threatening if not treated early.",
-        "Melanocytic Nevi (nv)": "Common moles are usually harmless. Monitor for changes in size, shape, or color. See a dermatologist if changes occur.",
-        "Vascular Lesions (vasc)": "Most are benign, but if you notice bleeding or rapid growth, consult a healthcare provider.",
-        "Actinic Keratosis (ak)": "Precancerous lesion. Consult a dermatologist for evaluation and possible treatment. Protect skin from sun exposure.",
-        "Seborrheic Keratosis (sk)": "Benign skin growth. No treatment needed unless it becomes irritated or for cosmetic reasons.",
-        "Squamous Cell Carcinoma (scc)": "Consult a dermatologist promptly. Early treatment is important to prevent spread.",
-        "Lentigo (lentigo)": "Usually benign, but monitor for changes. If in doubt, consult a dermatologist.",
-        "Atypical Nevus (atypical nevus)": "Monitor closely for changes. Increased risk for melanoma. Regular skin checks recommended.",
-        "Pyogenic Granuloma (pg)": "Benign vascular lesion. May bleed easily. Consult a healthcare provider if bothersome or recurrent."
+        "Basal Cell Carcinoma (bcc)": [
+            "Consult a dermatologist for treatment options as soon as possible.",
+            "Early intervention is important to prevent further growth.",
+            "Avoid sun exposure and use broad-spectrum sunscreen daily.",
+            "Do not attempt to self-treat or remove the lesion.",
+            "Schedule regular follow-ups with your dermatologist to monitor for recurrence."
+        ],
+        "Benign Keratosis-like Lesions (bkl)": [
+            "These are usually harmless, but monitor for changes in size, color, or shape.",
+            "If you notice rapid growth or color change, consult a dermatologist.",
+            "Avoid scratching or picking at the lesion to prevent irritation or infection.",
+            "Maintain good skin hygiene to avoid secondary infection.",
+            "Consider removal only if the lesion becomes bothersome or for cosmetic reasons."
+        ],
+        "Dermatofibroma (df)": [
+            "Generally benign and do not require treatment.",
+            "If the lesion becomes painful, itchy, or changes in appearance, seek medical advice.",
+            "Avoid trauma to the area to prevent irritation.",
+            "Monitor for any rapid changes in size or color.",
+            "Removal is usually not necessary unless it causes discomfort."
+        ],
+        "Melanoma (mel)": [
+            "Seek immediate medical attention. Melanoma can be life-threatening if not treated early.",
+            "Do not attempt to self-treat or remove the lesion.",
+            "Schedule regular skin checks with a dermatologist, especially if you have a history of sunburns or family history of melanoma.",
+            "Protect your skin from further sun exposure.",
+            "Educate close family members about the signs of melanoma for early detection."
+        ],
+        "Melanocytic Nevi (nv)": [
+            "Common moles are usually harmless.",
+            "Monitor for changes in size, shape, or color using the ABCDE rule (Asymmetry, Border, Color, Diameter, Evolving).",
+            "See a dermatologist if you notice any changes or if the mole becomes symptomatic (itchy, bleeding, or painful).",
+            "Avoid excessive sun exposure and use sunscreen regularly.",
+            "Do not attempt to remove moles at home."
+        ],
+        "Vascular Lesions (vasc)": [
+            "Most are benign, but if you notice bleeding or rapid growth, consult a healthcare provider.",
+            "Avoid trauma to the lesion to prevent bleeding.",
+            "If the lesion is bothersome or cosmetically concerning, discuss removal options with a dermatologist.",
+            "Monitor for any changes in color or size.",
+            "Maintain good skin hygiene to prevent infection."
+        ],
     }
-    return recommendations.get(condition_name, "Consult a healthcare professional for further advice.")
+    recs = recommendations.get(condition_name, ["Consult a healthcare professional for further advice."])
+    return '\n'.join(f"- {r}" for r in recs)
 
 @app.route('/download_report', methods=['POST'])
 def download_report():
