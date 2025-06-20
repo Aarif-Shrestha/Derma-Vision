@@ -11,6 +11,9 @@ import time
 from tensorflow import keras
 from PIL import Image, ImageOps
 import google.generativeai as genai
+from tensorflow.keras.preprocessing import image
+import tensorflow as tf
+from tensorflow.keras.applications.efficientnet_v2 import preprocess_input
 
 app = Flask(__name__)
 app.secret_key = 'eefbca0d0f8710f182def35e827248045dafc9592fe6cd45af93ae784a6e04d3'  # Change this to a secure secret key
@@ -543,23 +546,12 @@ def is_skin_related_image(image_path):
         print(f"[ERROR] Gemini API call failed: {e}")
         return False
 
-def preprocess_image(filepath):
-    try:
-        img = Image.open(filepath)
-        img = ImageOps.exif_transpose(img)  # Correct orientation
-        img = img.convert('RGB')
-    except Exception as e:
-        print(f"[ERROR] Failed to open image for preprocessing: {e}")
-        raise
-    # Center crop to square
-    min_side = min(img.size)
-    left = (img.width - min_side) // 2
-    top = (img.height - min_side) // 2
-    img = img.crop((left, top, left + min_side, top + min_side))
-    img = img.resize((224, 224))
-    img_array = np.array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array = img_array.astype(np.float32) / 255.0
+def preprocess_image(img_path):
+    img = image.load_img(img_path, target_size=(224, 224))
+    img_array = image.img_to_array(img)
+    img_array = tf.cast(img_array, tf.float32)
+    img_array = tf.expand_dims(img_array, axis=0)
+    img_array = preprocess_input(img_array)
     return img_array
 
 if __name__ == '__main__':
