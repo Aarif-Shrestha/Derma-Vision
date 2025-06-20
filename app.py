@@ -192,7 +192,7 @@ def detect():
         if isinstance(prediction, list) and isinstance(prediction[0], list):
             prediction = prediction[0]
         class_probabilities = {name: float(prob) for name, prob in zip(class_names, prediction)}
-        predicted_label = class_names[int(np.argmax(list(class_probabilities.values())))]
+        predicted_label = class_names[int(np.argmax(list(class_probabilities.values()))) -1]
         result = {
             'predicted_label': predicted_label,
             'class_probabilities': class_probabilities,
