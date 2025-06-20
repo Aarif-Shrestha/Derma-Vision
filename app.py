@@ -16,7 +16,7 @@ import tensorflow as tf
 from tensorflow.keras.applications.efficientnet_v2 import preprocess_input
 
 app = Flask(__name__)
-app.secret_key = 'eefbca0d0f8710f182def35e827248045dafc9592fe6cd45af93ae784a6e04d3'  # Change this to a secure secret key
+app.secret_key = 'please_use_secure_screctkey'  # Change this to a secure secret key
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
@@ -526,7 +526,7 @@ def download_latest_report():
         print('PDF generation error:', e)
         return jsonify({'error': 'Failed to generate PDF report. Please contact support.'}), 500
 
-genai.configure(api_key="AIzaSyA1o8P4FE8B77mBPNwJHCqEyLdzyOdaVmY")  # ← REPLACE with your actual key
+genai.configure(api_key="gemini_api_key")  # ← REPLACE with your actual key
 
 def is_skin_related_image(image_path):
     try:
