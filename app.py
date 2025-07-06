@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 from tensorflow import keras
 import pdfkit
 from PIL import Image, ImageOps
+import threading
+import gdown
 import google.generativeai as genai
 from tensorflow.keras.preprocessing import image
 import tensorflow as tf
@@ -27,12 +29,21 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load model at server startup so it is always available for predictions
 MODEL_PATH = os.path.join(app.root_path, 'models', 'thisisit.keras')
-# Load model in a background thread so server starts immediately
-import threading
+MODEL_DRIVE_ID = '1Prp4q3qRBg0SZxHe3TnOHNRP2veZ2g8q'  # from your link
+
 model = None
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        print("[INFO] Downloading model from Google Drive...")
+        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+        url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
+        gdown.download(url, MODEL_PATH, quiet=False)
+        print("[INFO] Model downloaded!")
 
 def load_model_bg():
     global model
+    download_model()
     print("[INFO] Loading model, please wait...", flush=True)
     for i in range(3):
         print("[INFO] Loading" + "." * (i+1), flush=True)
@@ -41,6 +52,7 @@ def load_model_bg():
     print("[INFO] Model loaded successfully!", flush=True)
 
 threading.Thread(target=load_model_bg, daemon=True).start()
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 

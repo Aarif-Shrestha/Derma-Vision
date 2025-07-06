@@ -1,4 +1,4 @@
-.venv
+venv
 .env
 models/thisisit.keras
 __pycache__/
