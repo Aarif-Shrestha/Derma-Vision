@@ -572,5 +572,4 @@ def preprocess_image(img_path):
     return img_array
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8000))  # use Railway's port or default to 8000
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=5000, debug = True)
