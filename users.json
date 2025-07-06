@@ -1,9 +1,0 @@
-{
-    "users": [
-        {
-            "id": 1,
-            "email": "darpan@example.com",
-            "password": "$2b$12$j/yX7MSUWKGW7lhDaw9GbeU5FnKMZHNH7vNHTef5fpetH9hP0Moxu"
-        }
-    ]
-}
