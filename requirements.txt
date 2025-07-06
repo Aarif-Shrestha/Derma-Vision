@@ -2,7 +2,8 @@ numpy>=1.26.4
 bcrypt>=4.3.0
 flask>=3.1.1
 werkzeug>=3.0
-tensorflow>=2.15.1
+# tensorflow>=2.15.1
+tensorflow==2.11.0
 reportlab>=4.2.0
 genai>=0.1.0
 python-dotenv>=1.0.0
