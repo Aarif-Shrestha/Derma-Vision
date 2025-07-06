@@ -8,7 +8,9 @@ from functools import wraps
 from datetime import datetime
 import io
 import time
+from dotenv import load_dotenv
 from tensorflow import keras
+import pdfkit
 from PIL import Image, ImageOps
 import google.generativeai as genai
 from tensorflow.keras.preprocessing import image
@@ -526,7 +528,10 @@ def download_latest_report():
         print('PDF generation error:', e)
         return jsonify({'error': 'Failed to generate PDF report. Please contact support.'}), 500
 
-genai.configure(api_key="gemini_api_key")  # ← REPLACE with your actual key
+load_dotenv()
+
+# Load the Gemini API key securely from environment
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def is_skin_related_image(image_path):
     try:
