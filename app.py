@@ -51,7 +51,8 @@ def load_model_bg():
     model = keras.models.load_model(MODEL_PATH)
     print("[INFO] Model loaded successfully!", flush=True)
 
-threading.Thread(target=load_model_bg, daemon=True).start()
+load_model_bg()  # <-- Waits until model is fully loaded before starting the app
+
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -170,29 +171,84 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('index'))  # Changed from home to index
 
+# @app.route('/detect', methods=['GET', 'POST'])
+# @login_required
+# def detect():
+#     if request.method == 'GET':
+#         return render_template('detect.html')
+#     if 'file' not in request.files:
+#         return jsonify({'error': 'No file part'}), 400
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({'error': 'No selected file'}), 400
+#     if file and allowed_file(file.filename):
+#         filename = secure_filename(file.filename)
+#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#         file.save(filepath)
+#         # --- Gemini skin check ---
+#         if not is_skin_related_image(filepath):
+#             return jsonify({'error': 'The uploaded image does not appear to be a skin lesion or skin disease.'}), 400
+#         # --- End Gemini check ---
+#         if model is None:
+#             return jsonify({'error': 'Model is still loading, please try again in a few seconds.'}), 503
+#         img_array = preprocess_image(filepath)
+#         prediction = model.predict(img_array)
+#         # Use fixed class names for prediction
+#         class_names = [
+#             "Basal Cell Carcinoma (bcc)",
+#             "Benign Keratosis-like Lesions (bkl)",
+#             "Dermatofibroma (df)",
+#             "Melanoma (mel)",
+#             "Melanocytic Nevi (nv)",
+#             "Vascular Lesions (vasc)"
+#         ]
+#         if hasattr(prediction, 'tolist'):
+#             prediction = prediction.tolist()
+#         if isinstance(prediction, list) and isinstance(prediction[0], list):
+#             prediction = prediction[0]
+#         class_probabilities = {name: float(prob) for name, prob in zip(class_names, prediction)}
+#         predicted_label = class_names[int(np.argmax(list(class_probabilities.values()))) -1]
+#         result = {
+#             'predicted_label': predicted_label,
+#             'class_probabilities': class_probabilities,
+#             'image_url': url_for('static', filename=f'uploads/{filename}', _external=True),
+#             'recommendations': [rec.lstrip('- ').strip() for rec in get_recommendations(predicted_label).split('\n') if rec.strip()]
+#         }
+#         return jsonify(result)
+#     return jsonify({'error': 'Invalid file type'}), 400
+
 @app.route('/detect', methods=['GET', 'POST'])
 @login_required
 def detect():
     if request.method == 'GET':
         return render_template('detect.html')
+
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
+
         # --- Gemini skin check ---
         if not is_skin_related_image(filepath):
             return jsonify({'error': 'The uploaded image does not appear to be a skin lesion or skin disease.'}), 400
         # --- End Gemini check ---
+
+        # Check if model is ready
         if model is None:
             return jsonify({'error': 'Model is still loading, please try again in a few seconds.'}), 503
+
+        # Preprocess and predict
         img_array = preprocess_image(filepath)
         prediction = model.predict(img_array)
-        # Use fixed class names for prediction
+
+        # Define class labels
         class_names = [
             "Basal Cell Carcinoma (bcc)",
             "Benign Keratosis-like Lesions (bkl)",
@@ -201,20 +257,38 @@ def detect():
             "Melanocytic Nevi (nv)",
             "Vascular Lesions (vasc)"
         ]
+
+        # Ensure prediction is a flat list
         if hasattr(prediction, 'tolist'):
             prediction = prediction.tolist()
         if isinstance(prediction, list) and isinstance(prediction[0], list):
             prediction = prediction[0]
-        class_probabilities = {name: float(prob) for name, prob in zip(class_names, prediction)}
-        predicted_label = class_names[int(np.argmax(list(class_probabilities.values()))) -1]
+
+        # Format probabilities
+        class_probabilities = {
+            name: float(prob) for name, prob in zip(class_names, prediction)
+        }
+
+        # Get the predicted label
+        predicted_index = int(np.argmax(prediction))
+        predicted_label = class_names[predicted_index]
+
+        # Return response
         result = {
             'predicted_label': predicted_label,
             'class_probabilities': class_probabilities,
             'image_url': url_for('static', filename=f'uploads/{filename}', _external=True),
-            'recommendations': [rec.lstrip('- ').strip() for rec in get_recommendations(predicted_label).split('\n') if rec.strip()]
+            'recommendations': [
+                rec.lstrip('- ').strip()
+                for rec in get_recommendations(predicted_label).split('\n')
+                if rec.strip()
+            ]
         }
         return jsonify(result)
+
     return jsonify({'error': 'Invalid file type'}), 400
+
+
 
 @app.route('/faq')
 def faq():
