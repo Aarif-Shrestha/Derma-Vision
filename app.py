@@ -28,18 +28,60 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load model at server startup so it is always available for predictions
-MODEL_PATH = os.path.join(app.root_path, 'models', 'thisisit.keras')
-MODEL_DRIVE_ID = '1Prp4q3qRBg0SZxHe3TnOHNRP2veZ2g8q'  # from your link
+# MODEL_PATH = os.path.join(app.root_path, 'models', 'thisisit.keras')
+# MODEL_DRIVE_ID = '1Prp4q3qRBg0SZxHe3TnOHNRP2veZ2g8q'  # from your link
 
+# model = None
+
+# def download_model():
+#     if not os.path.exists(MODEL_PATH):
+#         print("[INFO] Downloading model from Google Drive...")
+#         os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+#         url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
+#         gdown.download(url, MODEL_PATH, quiet=False)
+#         print("[INFO] Model downloaded!")
+
+# tf.config.set_visible_devices([], 'GPU')
+
+# def load_model_bg():
+#     global model
+#     download_model()
+#     print("[INFO] Loading model, please wait...", flush=True)
+#     for i in range(3):
+#         print("[INFO] Loading" + "." * (i+1), flush=True)
+#         time.sleep(0.5)
+#     model = keras.models.load_model(MODEL_PATH)
+#     print("[INFO] Model loaded successfully!", flush=True)
+
+# load_model_bg()  # <-- Waits until model is fully loaded before starting the app
+
+import os
+import time
+import gdown
+import tensorflow as tf
+from tensorflow import keras
+
+# --- ENV DETECTION ---
+IS_PRODUCTION = os.getenv("RAILWAY_STATIC_URL") or os.getenv("HUGGINGFACE_SPACES")
+LOCAL_MODEL_PATH = os.path.join(os.path.dirname(__file__), 'models', 'thisisit.keras')
+MODEL_PATH = '/tmp/thisisit.keras' if IS_PRODUCTION else LOCAL_MODEL_PATH
+
+MODEL_DRIVE_ID = '1Prp4q3qRBg0SZxHe3TnOHNRP2veZ2g8q'
 model = None
 
 def download_model():
-    if not os.path.exists(MODEL_PATH):
+    if IS_PRODUCTION and not os.path.exists(MODEL_PATH):
         print("[INFO] Downloading model from Google Drive...")
         os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
         url = f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}"
         gdown.download(url, MODEL_PATH, quiet=False)
-        print("[INFO] Model downloaded!")
+        print(f"[INFO] Model downloaded to {MODEL_PATH}")
+
+# Optional: disable GPU in memory-limited environments
+try:
+    tf.config.set_visible_devices([], 'GPU')
+except:
+    pass
 
 def load_model_bg():
     global model
@@ -51,8 +93,8 @@ def load_model_bg():
     model = keras.models.load_model(MODEL_PATH)
     print("[INFO] Model loaded successfully!", flush=True)
 
-load_model_bg()  # <-- Waits until model is fully loaded before starting the app
-
+# --- Call this during app startup ---
+load_model_bg()
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -271,7 +313,7 @@ def detect():
 
         # Get the predicted label
         predicted_index = int(np.argmax(prediction))
-        predicted_label = class_names[predicted_index]
+        predicted_label = class_names[predicted_index - 1]
 
         # Return response
         result = {
