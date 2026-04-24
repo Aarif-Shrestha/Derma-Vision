@@ -55,6 +55,8 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # load_model_bg()  # <-- Waits until model is fully loaded before starting the app
 
+# this was the test function beforw while i was trying
+
 import os
 import time
 import gdown
