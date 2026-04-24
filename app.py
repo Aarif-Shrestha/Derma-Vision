@@ -372,7 +372,7 @@ def download_report_pdf(report_id):
     
     return response
 
-def get_recommendations(condition_name):
+def get_recommendations(condition_name):  # for now only these much recommendations as thiese were only the idsease we trianed the model after
     recommendations = {
         "Basal Cell Carcinoma (bcc)": [
             "Consult a dermatologist for treatment options as soon as possible.",
