@@ -661,7 +661,7 @@ def download_latest_report():
 load_dotenv()
 
 # Load the Gemini API key securely from environment
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))         # we used this beacuse we were short on time to classify if disease or random img so we used gemini
 
 def is_skin_related_image(image_path):
     try:
@@ -677,7 +677,7 @@ def is_skin_related_image(image_path):
         result = response.text.strip().lower()
         print("Gemini raw response:", result)
         return result.startswith("yes")
-    except Exception as e:
+    except Exception as e:        
         print(f"[ERROR] Gemini API call failed: {e}")
         return False
 
